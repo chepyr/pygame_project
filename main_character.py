@@ -16,14 +16,18 @@ class MainCharacter(Thing):
         self.velocity = 300
         self.moving = False
 
-        self.rect = pygame.rect.Rect((self.draw_rect.x, self.draw_rect.y + 68), (66, 14))
+        self.rect = pygame.rect.Rect(
+            (self.draw_rect.x, self.draw_rect.y + 68), (66, 14))
         self.float_x = self.rect.x
         self.float_y = self.rect.y
+
+        self.is_choping_wood = False
 
     def update_rects(self, x=0, y=0):
         self.rect.x = x
         self.rect.y = y
-        self.draw_rect = pygame.rect.Rect((self.rect.x, self.rect.y - 68), (66, 14))
+        self.draw_rect = pygame.rect.Rect(
+            (self.rect.x, self.rect.y - 68), (66, 14))
 
     def update(self, time, move=False, groups=None):
         if move:

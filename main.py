@@ -1,8 +1,8 @@
 import pygame
-from main_character import MainCharacter
-from things_dir.plant import Tree, Grass
 import modified_group
-import things_dir
+import things_dir.plant
+from main_character import MainCharacter
+import inventory_class
 
 GRASS_COLOR = (131, 146, 76)
 SCREEN_SIZE = (1000, 800)
@@ -15,15 +15,21 @@ def main():
     pygame.mouse.set_visible(False)
     screen.fill(GRASS_COLOR)
 
-    # sprites = pygame.sprite.Group()
-    sprites = modified_group.ModifiedGroup()
     cursor_group = modified_group.ModifiedGroup()
     things_dir.thing.Cursor(cursor_group)
 
+    sprites = modified_group.ModifiedGroup()
+    trees_sprites = modified_group.ModifiedGroup()
+
+    # Инвентарь
+    axe = things_dir.thing.Axe()
+    inventory = inventory_class.Inventory()
+    inventory.add_item(axe)
+
     for _ in range(20):
-        Grass(sprites)
-    for _ in range(8):
-        Tree(sprites)
+        things_dir.plant.Grass(sprites)
+    for _ in range(3):
+        things_dir.plant.Tree(trees_sprites)
 
     hero_group = modified_group.ModifiedGroup()
     hero = MainCharacter(hero_group)
@@ -39,19 +45,44 @@ def main():
 
             if event.type == pygame.KEYDOWN:
                 pressed_button = pygame.key.get_pressed().index(1)
+                # Нажатие стрелок для передвижения персонажа
                 if pressed_button in [79, 80, 81, 82]:
                     hero.moving = True
                     hero.set_moving_direction(pressed_button)
 
+                # Зажата кнопка 'i' для просмотра инвентаря
+                elif pressed_button == 12:
+                    inventory.print_content()
+
+                else:
+                    print(pressed_button)
+
             if event.type == pygame.KEYUP:
-                if event.key in [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_DOWN, pygame.K_UP]:
+                if event.key in [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_DOWN,
+                                 pygame.K_UP]:
                     hero.moving = False
+
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                # Проверка на то, что человек хочет рубить деревья
+                for tree in trees_sprites:
+                    # Прверка на то, что игрок стоит рядом с текущим деревом,
+                    # у него есть топор в инвентаре и
+                    # что игрок щёлкнул по текущему дереву
+                    if tree.near_to_the_hero(hero.rect) and \
+                            tree.pressed_on(event) and \
+                            inventory.has(things_dir.thing.Axe.name):
+                        tree.start_cutting_wood()
 
         cur_time = clock.tick()
         # Отрисовка всех спрайтов
-        if hero.moving:
-            hero_group.update(cur_time, move=True, groups=sprites)
+
         sprites.draw(screen)
+        trees_sprites.update(cur_time)
+        trees_sprites.draw(screen)
+
+        # Отрсовка героя
+        if hero.moving:
+            hero_group.update(cur_time, move=True, groups=trees_sprites)
         hero_group.draw(screen)
 
         # Отрисовка курсора

@@ -9,11 +9,9 @@ class Thing(pygame.sprite.Sprite):
         super().__init__(*groups)
         self.image = load_image(Thing.image_name, -1)
         self.rect = self.image.get_rect()
-        self.draw_rect = self.image.get_rect()
 
     def set_image(self, image_name, *colorkey):
         self.image = load_image(image_name, *colorkey)
-        self.draw_rect = self.image.get_rect()
         return self.image
 
 
@@ -24,8 +22,18 @@ class Cursor(Thing):
         super().__init__(*groups)
         self.image = load_image(Cursor.image_name, -1)
         self.rect = self.image.get_rect()
-        self.draw_rect = self.rect
 
     def update(self, pos):
         self.rect.x, self.rect.y = pos
-        self.draw_rect = self.rect
+
+
+class Tool(Thing):
+    def __init__(self):
+        super().__init__()
+
+
+class Axe(Tool):
+    name = 'axe'
+
+    def __init__(self):
+        super().__init__()
