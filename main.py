@@ -2,6 +2,7 @@ import pygame
 from main_character import MainCharacter
 from things_dir.plant import Tree, Grass
 import modified_group
+import things_dir
 
 GRASS_COLOR = (131, 146, 76)
 SCREEN_SIZE = (1000, 800)
@@ -11,10 +12,14 @@ def main():
     pygame.init()
     pygame.display.set_caption('Game')
     screen = pygame.display.set_mode(SCREEN_SIZE)
+    pygame.mouse.set_visible(False)
     screen.fill(GRASS_COLOR)
 
     # sprites = pygame.sprite.Group()
     sprites = modified_group.ModifiedGroup()
+    cursor_group = modified_group.ModifiedGroup()
+    things_dir.thing.Cursor(cursor_group)
+
     for _ in range(20):
         Grass(sprites)
     for _ in range(8):
@@ -43,10 +48,16 @@ def main():
                     hero.moving = False
 
         cur_time = clock.tick()
+        # Отрисовка всех спрайтов
         if hero.moving:
             hero_group.update(cur_time, move=True, groups=sprites)
         sprites.draw(screen)
         hero_group.draw(screen)
+
+        # Отрисовка курсора
+        if pygame.mouse.get_focused():
+            cursor_group.update(pygame.mouse.get_pos())
+            cursor_group.draw(screen)
 
         pygame.display.flip()
 
