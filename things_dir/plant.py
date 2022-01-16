@@ -28,7 +28,7 @@ class Tree(Plant):
             (self.draw_rect.x + 32, self.draw_rect.y + 116), (68, 16))
 
         self.left_to_chop = 100
-        self.chopping_velocity = 40
+        self.chopping_velocity = 50
         self.is_being_chop = False
 
     def near_to_the_hero(self, hero_coords):
@@ -41,8 +41,11 @@ class Tree(Plant):
 
         return distance < accessible_radius
 
-    def start_cutting_wood(self):
+    def start_chopping(self):
         self.is_being_chop = True
+
+    def stop_chopping(self):
+        self.is_being_chop = False
 
     def pressed_on(self, *args):
         return args and args[0].type == pygame.MOUSEBUTTONDOWN and \

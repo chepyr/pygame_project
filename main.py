@@ -65,13 +65,19 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 # Проверка на то, что человек хочет рубить деревья
                 for tree in trees_sprites:
-                    # Прверка на то, что игрок стоит рядом с текущим деревом,
+                    # Проверка на то, что игрок стоит рядом с текущим деревом,
                     # у него есть топор в инвентаре и
                     # что игрок щёлкнул по текущему дереву
                     if tree.near_to_the_hero(hero.rect) and \
                             tree.pressed_on(event) and \
                             inventory.has(things_dir.thing.Axe.name):
-                        tree.start_cutting_wood()
+                        tree.start_chopping()
+
+            if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                # Проверка на то, что игрок перестал рубить дерево
+                for tree in trees_sprites:
+                    if tree.is_being_chop:
+                        tree.stop_chopping()
 
         cur_time = clock.tick()
         # Отрисовка всех спрайтов
