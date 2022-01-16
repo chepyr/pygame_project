@@ -8,11 +8,12 @@ from things_dir.thing import Thing
 class Plant(Thing):
     image_name = 'default.png'
 
-    def __init__(self, *groups):
+    def __init__(self, field=None, *groups):
         super().__init__(*groups)
         self.image = self.set_image(Plant.image_name, -1)
         self.rect.x = 0
         self.rect.y = 0
+        self.field = field
 
 
 class Tree(Plant):
@@ -57,6 +58,7 @@ class Tree(Plant):
             if self.left_to_chop <= 0:
                 print('Дерево срублено')
                 self.kill()
+                self.field.create_wood(self.draw_rect)
 
 
 class Grass(Plant):

@@ -1,3 +1,6 @@
+from things_dir.thing import Thing
+
+
 class Inventory:
     def __init__(self):
         self.inventory_content = list()
@@ -17,3 +20,10 @@ class Inventory:
                 return True
         return False
 
+
+class Wood(Thing):
+    image_name = 'wood.png'
+
+    def __init__(self):
+        super().__init__()
+        self.image = self.set_image(Wood.image_name, -1)

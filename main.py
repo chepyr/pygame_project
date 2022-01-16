@@ -3,6 +3,7 @@ import modified_group
 import things_dir.plant
 from main_character import MainCharacter
 import inventory_class
+import field_class
 
 GRASS_COLOR = (131, 146, 76)
 SCREEN_SIZE = (1000, 800)
@@ -18,23 +19,24 @@ def main():
     cursor_group = modified_group.ModifiedGroup()
     things_dir.thing.Cursor(cursor_group)
 
-    sprites = modified_group.ModifiedGroup()
-    trees_sprites = modified_group.ModifiedGroup()
+    field = field_class.Field()
 
     # Инвентарь
     axe = things_dir.thing.Axe()
     inventory = inventory_class.Inventory()
     inventory.add_item(axe)
 
+    # Создание спрайтов
+    sprites = modified_group.ModifiedGroup()
+    trees_sprites = modified_group.ModifiedGroup()
     for _ in range(20):
-        things_dir.plant.Grass(sprites)
+        things_dir.plant.Grass(field, sprites)
     for _ in range(3):
-        things_dir.plant.Tree(trees_sprites)
-
+        things_dir.plant.Tree(field, trees_sprites)
     hero_group = modified_group.ModifiedGroup()
     hero = MainCharacter(hero_group)
-    clock = pygame.time.Clock()
 
+    clock = pygame.time.Clock()
     running = True
     while running:
         screen.fill(GRASS_COLOR)
@@ -85,6 +87,9 @@ def main():
         sprites.draw(screen)
         trees_sprites.update(cur_time)
         trees_sprites.draw(screen)
+
+        field.update()
+        field.draw(screen)
 
         # Отрсовка героя
         if hero.moving:
