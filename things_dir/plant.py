@@ -29,11 +29,11 @@ class Tree(Plant):
             (self.draw_rect.x + 32, self.draw_rect.y + 116), (68, 16))
 
         self.left_to_chop = 100
-        self.chopping_velocity = 50
+        self.chopping_velocity = 100
         self.is_being_chop = False
 
     def near_to_the_hero(self, hero_coords):
-        accessible_radius = 80
+        accessible_radius = 150
         tree_center = self.rect.center
         hero_center = hero_coords.center
         x_distance = (tree_center[0] - hero_center[0]) ** 2
@@ -56,7 +56,7 @@ class Tree(Plant):
         if self.is_being_chop:
             self.left_to_chop -= time * self.chopping_velocity / 1000
             if self.left_to_chop <= 0:
-                print('Дерево срублено')
+
                 self.kill()
                 self.field.create_wood(self.draw_rect)
 

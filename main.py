@@ -2,8 +2,8 @@ import pygame
 import modified_group
 import things_dir.plant
 from main_character import MainCharacter
-import inventory_class
 import field_class
+from gameplay import gameplay_management, inventory_class
 
 GRASS_COLOR = (131, 146, 76)
 SCREEN_SIZE = (1000, 800)
@@ -12,26 +12,26 @@ SCREEN_SIZE = (1000, 800)
 def main():
     pygame.init()
     pygame.display.set_caption('Game')
-    screen = pygame.display.set_mode(SCREEN_SIZE)
+    screen = pygame.display.set_mode(SCREEN_SIZE, pygame.RESIZABLE)
     pygame.mouse.set_visible(False)
     screen.fill(GRASS_COLOR)
 
     cursor_group = modified_group.ModifiedGroup()
     things_dir.thing.Cursor(cursor_group)
 
+    # настройки игры
     field = field_class.Field()
-
-    # Инвентарь
+    game = gameplay_management.Game()
+    game.resize(screen.get_size())
     axe = things_dir.thing.Axe()
-    inventory = inventory_class.Inventory()
-    inventory.add_item(axe)
+    game.inventory.add_item(axe)
 
     # Создание спрайтов
     sprites = modified_group.ModifiedGroup()
     trees_sprites = modified_group.ModifiedGroup()
     for _ in range(20):
         things_dir.plant.Grass(field, sprites)
-    for _ in range(3):
+    for _ in range(6):
         things_dir.plant.Tree(field, trees_sprites)
     hero_group = modified_group.ModifiedGroup()
     hero = MainCharacter(hero_group)
@@ -45,6 +45,13 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
+            # Изменение размеров окна
+            if event.type == pygame.VIDEORESIZE:
+                # There's some code to add back window content here.
+                screen = pygame.display.set_mode((event.w, event.h),
+                                                  pygame.RESIZABLE)
+                game.resize(screen.get_size())
+
             if event.type == pygame.KEYDOWN:
                 pressed_button = pygame.key.get_pressed().index(1)
                 # Нажатие стрелок для передвижения персонажа
@@ -54,7 +61,7 @@ def main():
 
                 # Зажата кнопка 'i' для просмотра инвентаря
                 elif pressed_button == 12:
-                    inventory.print_content()
+                    game.inventory.enable_active_mode()
 
                 else:
                     print(pressed_button)
@@ -65,6 +72,7 @@ def main():
                     hero.moving = False
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                game.update(event)
                 # Проверка на то, что человек хочет рубить деревья
                 for tree in trees_sprites:
                     # Проверка на то, что игрок стоит рядом с текущим деревом,
@@ -72,7 +80,7 @@ def main():
                     # что игрок щёлкнул по текущему дереву
                     if tree.near_to_the_hero(hero.rect) and \
                             tree.pressed_on(event) and \
-                            inventory.has(things_dir.thing.Axe.name):
+                            game.inventory.has(things_dir.thing.Axe.name):
                         tree.start_chopping()
 
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
@@ -82,6 +90,7 @@ def main():
                         tree.stop_chopping()
 
         cur_time = clock.tick()
+
         # Отрисовка всех спрайтов
 
         sprites.draw(screen)
@@ -96,6 +105,9 @@ def main():
             hero_group.update(cur_time, move=True, groups=trees_sprites)
         hero_group.draw(screen)
 
+        # -------------------------------
+
+        game.draw(screen)
         # Отрисовка курсора
         if pygame.mouse.get_focused():
             cursor_group.update(pygame.mouse.get_pos())

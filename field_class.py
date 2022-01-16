@@ -1,4 +1,4 @@
-import inventory_class
+from gameplay import inventory_class
 import modified_group
 
 
@@ -15,6 +15,5 @@ class Field:
 
     def create_wood(self, tree_rect):
         new_wood = inventory_class.Wood()
-        new_wood.rect.x = tree_rect.x
-        new_wood.rect.y = tree_rect.y
+        new_wood.rect.center = tree_rect.center
         self.dropped_things.add(new_wood)
