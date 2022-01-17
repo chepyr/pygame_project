@@ -24,7 +24,7 @@ class MainCharacter(Thing):
 
         self.draw_rect.x = random.randrange(0, 800, 4)
         self.draw_rect.y = random.randrange(0, 700, 4)
-        self.velocity = 300
+        self.velocity = 200
 
         self.moving = False
         self.direction = None
@@ -62,13 +62,14 @@ class MainCharacter(Thing):
     def update(self, time, groups=None):
         if self.moving:
             # меняем картинку
-            self.current_image_left_time -= time * 1.5
+            self.current_image_left_time -= time * 1.2
             if self.current_image_left_time < 0:
                 self.update_image()
 
             displacement = self.velocity * time / 1000
             self.move(displacement)
 
+            # Проверка на пересечение с деревьями
             there_is_any_intersections = False
             if groups is not None:
                 for group in groups:

@@ -20,7 +20,6 @@ def main():
     things_dir.thing.Cursor(cursor_group)
 
     # настройки игры
-    field = field_class.Field()
     game = gameplay_management.Game()
     game.resize(screen.get_size())
     axe = things_dir.thing.Axe()
@@ -30,11 +29,11 @@ def main():
     sprites = modified_group.ModifiedGroup()
     trees_sprites = modified_group.ModifiedGroup()
     for _ in range(20):
-        things_dir.plant.Grass(field, sprites)
+        things_dir.plant.Grass(game.field, sprites)
     for _ in range(6):
-        things_dir.plant.Tree(field, trees_sprites)
+        things_dir.plant.Tree(game.field, trees_sprites)
     hero_group = modified_group.ModifiedGroup()
-    hero = MainCharacter(hero_group)
+    hero_group.add(game.hero)
 
     clock = pygame.time.Clock()
     running = True
@@ -56,7 +55,7 @@ def main():
                 pressed_button = pygame.key.get_pressed().index(1)
                 # Нажатие стрелок для передвижения персонажа
                 if pressed_button in [79, 80, 81, 82]:
-                    hero.start_moving(pressed_button)
+                    game.hero.start_moving(pressed_button)
 
                 # Зажата кнопка 'i' для просмотра инвентаря
                 elif pressed_button == 12:
@@ -68,7 +67,7 @@ def main():
             if event.type == pygame.KEYUP:
                 if event.key in [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_DOWN,
                                  pygame.K_UP]:
-                    hero.stop_moving()
+                    game.hero.stop_moving()
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 game.update(event)
@@ -77,7 +76,7 @@ def main():
                     # Проверка на то, что игрок стоит рядом с текущим деревом,
                     # у него есть топор в инвентаре и
                     # что игрок щёлкнул по текущему дереву
-                    if tree.near_to_the_hero(hero.rect) and \
+                    if tree.near_to_the_hero(game.hero.rect) and \
                             tree.pressed_on(event) and \
                             game.inventory.has(things_dir.thing.Axe.name):
                         tree.start_chopping()
@@ -96,9 +95,6 @@ def main():
         trees_sprites.update(cur_time)
         trees_sprites.draw(screen)
 
-        field.update()
-        field.draw(screen)
-
         # Отрсовка героя
         hero_group.update(cur_time, groups=trees_sprites)
         hero_group.draw(screen)
@@ -106,6 +102,7 @@ def main():
         # -------------------------------
 
         game.draw(screen)
+        game.update()
         # Отрисовка курсора
         if pygame.mouse.get_focused():
             cursor_group.update(pygame.mouse.get_pos())
