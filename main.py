@@ -56,8 +56,7 @@ def main():
                 pressed_button = pygame.key.get_pressed().index(1)
                 # Нажатие стрелок для передвижения персонажа
                 if pressed_button in [79, 80, 81, 82]:
-                    hero.moving = True
-                    hero.set_moving_direction(pressed_button)
+                    hero.start_moving(pressed_button)
 
                 # Зажата кнопка 'i' для просмотра инвентаря
                 elif pressed_button == 12:
@@ -69,7 +68,7 @@ def main():
             if event.type == pygame.KEYUP:
                 if event.key in [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_DOWN,
                                  pygame.K_UP]:
-                    hero.moving = False
+                    hero.stop_moving()
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 game.update(event)
@@ -101,8 +100,7 @@ def main():
         field.draw(screen)
 
         # Отрсовка героя
-        if hero.moving:
-            hero_group.update(cur_time, move=True, groups=trees_sprites)
+        hero_group.update(cur_time, groups=trees_sprites)
         hero_group.draw(screen)
 
         # -------------------------------

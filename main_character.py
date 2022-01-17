@@ -8,13 +8,26 @@ from load_image_function import load_image
 class MainCharacter(Thing):
     def __init__(self, *group):
         super().__init__(*group)
-        self.image = load_image('girl_skin.png', -1)
+        self.default_image = load_image('girl_skin.png', -1)
+        self.image = self.default_image
+        self.moving_to_right_images = []
+        for i in range(8):
+            current_image = load_image(f'girl_skin_move_right_{i}.png', -1)
+            self.moving_to_right_images.append(current_image)
+        self.image_blink = load_image('girl_skin_blink.png', -1)
+
+        self.image_left_times = {'moving': 100, 'default': 3000, 'blink': 100}
+        self.current_image_left_time = self.image_left_times['default']
+        self.current_image_num = 0
+
         self.draw_rect = self.image.get_rect()
 
         self.draw_rect.x = random.randrange(0, 800, 4)
         self.draw_rect.y = random.randrange(0, 700, 4)
         self.velocity = 300
+
         self.moving = False
+        self.direction = None
 
         self.rect = pygame.rect.Rect(
             (self.draw_rect.x, self.draw_rect.y + 68), (66, 14))
@@ -29,8 +42,30 @@ class MainCharacter(Thing):
         self.draw_rect = pygame.rect.Rect(
             (self.rect.x, self.rect.y - 68), (66, 14))
 
-    def update(self, time, move=False, groups=None):
-        if move:
+    def update_image(self):
+        if self.moving:
+            self.current_image_num = (1 + self.current_image_num) % len(
+                self.moving_to_right_images)
+            self.image = self.moving_to_right_images[self.current_image_num]
+            if self.direction == 'left' or self.direction == 'up':
+                self.image = pygame.transform.flip(self.image, True, False)
+
+            self.current_image_left_time = self.image_left_times['moving']
+        else:
+            if self.image == self.default_image:
+                self.image = self.image_blink
+                self.current_image_left_time = self.image_left_times['blink']
+            else:
+                self.image = self.default_image
+                self.current_image_left_time = self.image_left_times['default']
+
+    def update(self, time, groups=None):
+        if self.moving:
+            # меняем картинку
+            self.current_image_left_time -= time * 1.5
+            if self.current_image_left_time < 0:
+                self.update_image()
+
             displacement = self.velocity * time / 1000
             self.move(displacement)
 
@@ -42,6 +77,21 @@ class MainCharacter(Thing):
                         break
             if there_is_any_intersections:
                 self.move(displacement, reverse=True)
+        else:
+            self.current_image_left_time -= time
+            if self.current_image_left_time < 0:
+                self.update_image()
+
+    def start_moving(self, pressed_button):
+        self.moving = True
+        self.current_image_left_time = self.image_left_times['moving']
+        self.update_image()
+        self.set_moving_direction(pressed_button)
+
+    def stop_moving(self):
+        self.moving = False
+        self.current_image_num = 0
+        self.image = self.default_image
 
     def move(self, displacement, reverse=False):
         if reverse:
