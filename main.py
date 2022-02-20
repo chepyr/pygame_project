@@ -48,26 +48,48 @@ def main():
             if event.type == pygame.VIDEORESIZE:
                 # There's some code to add back window content here.
                 screen = pygame.display.set_mode((event.w, event.h),
-                                                  pygame.RESIZABLE)
+                                                 pygame.RESIZABLE)
                 game.resize(screen.get_size())
 
+            # ----------- Обработка событий нажатия кнопок -----------
+
             if event.type == pygame.KEYDOWN:
-                pressed_button = pygame.key.get_pressed().index(1)
                 # Нажатие стрелок для передвижения персонажа
-                if pressed_button in [79, 80, 81, 82]:
-                    game.hero.start_moving(pressed_button)
+                if event.key in [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_DOWN,
+                                 pygame.K_UP]:
+                    game.hero.start_moving(event.key)
 
                 # Зажата кнопка 'i' для просмотра инвентаря
-                elif pressed_button == 12:
+                elif event.key == pygame.K_i:
                     game.inventory.enable_active_mode()
 
-                else:
-                    print(pressed_button)
+                # Зажата кнопка "x" для рубки дерева
+                elif event.key == pygame.K_x:
+                    for tree in trees_sprites:
+                        if tree.near_to_the_hero(game.hero.rect) and \
+                                game.inventory.has(things_dir.thing.Axe.name):
+                            tree.start_chopping()
 
+                elif event.key == pygame.K_LSHIFT:
+                    game.hero.start_independent_moving()
+
+            # ----------- Обработка событий поднятия/отжатия(?) кнопок -------
             if event.type == pygame.KEYUP:
                 if event.key in [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_DOWN,
                                  pygame.K_UP]:
                     game.hero.stop_moving()
+
+                # Отпущена кнопка "x" для рубки дерева
+                elif event.key == pygame.K_x:
+                    for tree in trees_sprites:
+                        if tree.is_being_chop:
+                            tree.stop_chopping()
+
+                elif event.key == pygame.K_LSHIFT:
+                    pass
+                    # game.hero.stop_independent_moving()
+
+            # ------------------------------------------------------
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 game.update(event)
