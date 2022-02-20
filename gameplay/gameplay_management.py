@@ -7,6 +7,7 @@ import main_character
 from PIL import Image, ImageDraw, ImageFont
 
 
+
 class Game:
     def __init__(self):
         self.inventory = Inventory()

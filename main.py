@@ -8,6 +8,7 @@ from gameplay import gameplay_management, inventory_class
 GRASS_COLOR = (131, 146, 76)
 SCREEN_SIZE = (1000, 800)
 
+# is it ok
 
 def main():
     pygame.init()
