@@ -28,6 +28,7 @@ class MainCharacter(Thing):
 
         self.moving = False
         self.direction = None
+        self.independent_moving = False
 
         self.rect = pygame.rect.Rect(
             (self.draw_rect.x, self.draw_rect.y + 68), (66, 14))
@@ -78,6 +79,9 @@ class MainCharacter(Thing):
                         break
             if there_is_any_intersections:
                 self.move(displacement, reverse=True)
+
+        # if self.independent_moving:
+        #     self.independent_move(time)
         else:
             self.current_image_left_time -= time
             if self.current_image_left_time < 0:
@@ -108,6 +112,17 @@ class MainCharacter(Thing):
             self.float_y -= displacement
         self.update_rects(x=int(self.float_x), y=int(self.float_y))
 
+    # def independent_move(self, time):
+    #     self.
+    #     pass
+
     def set_moving_direction(self, button):
-        directions = {79: 'right', 80: 'left', 81: 'down', 82: 'up'}
+        directions = {pygame.K_RIGHT: 'right', pygame.K_LEFT: 'left',
+                      pygame.K_DOWN: 'down', pygame.K_UP: 'up'}
         self.direction = directions[button]
+
+    def start_independent_moving(self):
+        self.independent_moving = True
+
+    def stop_independent_moving(self):
+        self.independent_moving = False

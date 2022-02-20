@@ -4,7 +4,11 @@ import sys
 
 
 def load_image(name, colorkey=None):
+
     fullname = os.path.join('data', name)
+    current_path = os.path.dirname(__file__)
+    fullname = os.path.join(current_path, fullname)
+
     if not os.path.isfile(fullname):
         print(f"Файл с изображением '{fullname}' не найден")
         sys.exit()

@@ -141,12 +141,14 @@ class Resource(things_dir.thing.Thing):
         self.group = pygame.sprite.GroupSingle()
 
     def update_image(self):
-        font = ImageFont.truetype("arial.ttf", 25)
-        image = Image.new('RGB', (100, 100), (161, 80, 116))
+        text_color = (140, 100, 116)
+        stroke_color = (80, 80, 80)
+        font = ImageFont.truetype("arial.ttf", 30)
+        image = Image.new('RGB', (100, 100), (0, 0, 0))
         draw = ImageDraw.Draw(image)
-        draw.text((10, 10), text=f'{self.count}', fill=(140, 100, 116),
-                  align="center", font=font, stroke_width=1,
-                  stroke_fill="black")
+        draw.text((10, 10), text=f'{self.count}', fill=text_color,
+                  align="center", font=font, stroke_width=2,
+                  stroke_fill=stroke_color)
         image_bytes = image.tobytes()
         self.image = pygame.image.fromstring(image_bytes, (100, 100), 'RGB')
         self.image = self.image.convert()
