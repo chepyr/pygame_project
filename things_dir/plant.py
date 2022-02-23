@@ -19,7 +19,7 @@ class Plant(Thing):
 class Tree(Plant):
     image_name = 'tree.png'
 
-    def __init__(self, *groups):
+    def __init__(self, *groups, age=100):
         super().__init__(*groups)
         self.image = self.set_image(Tree.image_name, -1)
         self.draw_rect = self.image.get_rect()
@@ -31,6 +31,8 @@ class Tree(Plant):
         self.left_to_chop = 100
         self.chopping_velocity = 100
         self.is_being_chop = False
+
+        self.age = age
 
     def near_to_the_hero(self, hero_coords):
         accessible_radius = 150
@@ -56,9 +58,9 @@ class Tree(Plant):
         if self.is_being_chop:
             self.left_to_chop -= time * self.chopping_velocity / 1000
             if self.left_to_chop <= 0:
-
                 self.kill()
                 self.field.create_wood(self.draw_rect)
+                self.field.create_seed(self.draw_rect)
 
 
 class Grass(Plant):

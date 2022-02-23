@@ -7,7 +7,6 @@ import main_character
 from PIL import Image, ImageDraw, ImageFont
 
 
-
 class Game:
     def __init__(self):
         self.inventory = Inventory()
@@ -33,9 +32,22 @@ class Game:
         for item in collected_things:
             if item == 'wood':
                 self.resources.wood_resource.increase(1)
+            elif item == 'seed':
+                self.resources.seed_resource.increase(1)
 
     def resize(self, new_size):
         self.taskbar.resize(new_size)
+
+    def plant_tree(self):
+        # Проверка на наличие семян у игрока
+        if self.resources.seed_resource.count > 0:
+            # Сажаем новое дерево
+            new_plant = things_dir.plant.Tree(self.field, age=0)
+            self.field.trees_group.add(new_plant)
+
+            print(self.field.trees_group)
+            # Уменьшаем количество семян у игрока
+            self.resources.seed_resource.increase(-1)
 
 
 class Taskbar(things_dir.thing.Thing):
@@ -131,7 +143,8 @@ class AllResources(pygame.sprite.Group):
     def __init__(self):
         super().__init__()
         self.wood_resource = WoodResource()
-        self.resources = [self.wood_resource]
+        self.seed_resource = SeedResource()
+        self.resources = [self.wood_resource, self.seed_resource]
         self.add(*self.resources)
 
 
@@ -167,6 +180,19 @@ class WoodResource(Resource):
         super().__init__()
         self.image = self.set_image(WoodResource.image_name, -1)
         self.rect.x = 200
+        self.rect.y = 700
+
+    def increase(self, count):
+        self.count += count
+
+
+class SeedResource(Resource):
+    image_name = 'seed.png'
+
+    def __init__(self):
+        super().__init__()
+        self.image = self.set_image(SeedResource.image_name, -1)
+        self.rect.x = 400
         self.rect.y = 700
 
     def increase(self, count):
