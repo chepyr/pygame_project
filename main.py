@@ -8,7 +8,6 @@ from gameplay import gameplay_management, inventory_class
 GRASS_COLOR = (131, 146, 76)
 SCREEN_SIZE = (1000, 800)
 
-# is it ok
 
 def main():
     pygame.init()
@@ -116,8 +115,9 @@ def main():
 
         cur_time = clock.tick()
 
-        # Отрисовка всех спрайтов
 
+
+        # Отрисовка всех спрайтов
         sprites.draw(screen)
         game.field.trees_group.update(cur_time)
         game.field.trees_group.draw(screen)
