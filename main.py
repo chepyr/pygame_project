@@ -26,20 +26,20 @@ def main():
     game.inventory.add_item(axe)
 
     # Создание спрайтов
-    sprites = modified_group.ModifiedGroup()
     grass_sprites = modified_group.ModifiedGroup()
     for grass_i in range(20):
         new_grass = things_dir.plant.Grass()
         grass_sprites.add(new_grass)
+
     for tree_i in range(6):
-        new_plant = things_dir.plant.Tree(game.field)
+        new_plant = things_dir.plant.Tree(field=game.field)
         game.field.trees_group.add(new_plant)
-        sprites.add(new_plant)
+        game.field.sprites.add(new_plant)
     del grass_i, tree_i
 
     hero_group = modified_group.ModifiedGroup()
     hero_group.add(game.hero)
-    sprites.add(game.hero)
+    game.field.sprites.add(game.hero)
 
     clock = pygame.time.Clock()
     running = True
@@ -125,8 +125,8 @@ def main():
         game.field.trees_group.update(cur_time)
         hero_group.update(cur_time, groups=game.field.trees_group)
 
-        sprites = sort_sprites(sprites)
-        sprites.draw(screen)
+        game.field.sprites = sort_sprites(game.field.sprites)
+        game.field.sprites.draw(screen)
 
         game.draw(screen)
         game.update()

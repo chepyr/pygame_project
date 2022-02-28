@@ -21,7 +21,7 @@ class Tree(Plant):
     images_names = ['tree_stage_0.png', 'tree_stage_1.png', 'tree_stage_2.png',
                     'tree.png']
 
-    def __init__(self, *groups, age=100):
+    def __init__(self, *groups, age=100, field=None):
         super().__init__(*groups)
 
         self.age = age
@@ -37,8 +37,10 @@ class Tree(Plant):
         self.left_to_chop = 100
         self.chopping_velocity = 100
         self.is_being_chop = False
+        self.field = field
 
     def near_to_the_hero(self, hero_coords):
+        """Возвращает True, если дерево находится в близком к герою радиусе"""
         accessible_radius = 150
         tree_center = self.rect.center
         hero_center = hero_coords.center
@@ -49,6 +51,7 @@ class Tree(Plant):
         return distance < accessible_radius
 
     def start_chopping(self):
+        # Проверка на то, что дерево выросшее
         if self.growing_up_stage == 3:
             self.is_being_chop = True
 
@@ -56,16 +59,26 @@ class Tree(Plant):
         self.is_being_chop = False
 
     def pressed_on(self, *args):
+        """Проверка на то, что пользователь нажимает кнопкой мышии на дерево"""
         return args and args[0].type == pygame.MOUSEBUTTONDOWN and \
                self.draw_rect.collidepoint(args[0].pos)
 
     def update(self, time):
+        """Обновление состояния дерева: уменьшение количества оставшейся жизни,
+            изменение спрайтов по мере роста"""
         if self.is_being_chop:
+            # Если дерево находится в процессе рубки,
+            # то уменьшаем оставшееся у него количество "жизни"
             self.left_to_chop -= time * self.chopping_velocity / 1000
+
+            # Если у дерева закончилась "жизнь", то удаляем его,
+            # а на его месте на поле выпадаюи семечко и кусок древесины
             if self.left_to_chop <= 0:
                 self.field.create_wood(self.draw_rect)
                 self.field.create_seed(self.draw_rect)
                 self.kill()
+                del self
+                return
 
         # Увеличиваем возраст растения, если оно ещё растёт
         if self.age < 100:

@@ -29,6 +29,8 @@ class Game:
         self.field.draw(screen)
 
     def add_collected_things(self, collected_things):
+        """Если игрок собрал какую-то вещь с поля,
+            то увеличиваем значение соответстующего ресурса"""
         for item in collected_things:
             if item == 'wood':
                 self.resources.wood_resource.increase(1)
@@ -39,13 +41,14 @@ class Game:
         self.taskbar.resize(new_size)
 
     def plant_tree(self):
+        """Высаживает новое дерево (если у игрока есть семена)"""
         # Проверка на наличие семян у игрока
         if self.resources.seed_resource.count > 0:
             # Сажаем новое дерево
-            new_plant = things_dir.plant.Tree(self.field, age=0)
+            new_plant = things_dir.plant.Tree(field=self.field, age=0)
             self.field.trees_group.add(new_plant)
+            self.field.sprites.add(new_plant)
 
-            print(self.field.trees_group)
             # Уменьшаем количество семян у игрока
             self.resources.seed_resource.increase(-1)
 
