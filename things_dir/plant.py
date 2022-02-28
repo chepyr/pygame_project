@@ -14,6 +14,7 @@ class Plant(Thing):
         self.rect.x = 0
         self.rect.y = 0
         self.field = field
+        self.center = [0, 0]
 
 
 class Tree(Plant):
@@ -100,13 +101,29 @@ class Tree(Plant):
             self.update_image(same_coords=True)
 
     def update_image(self, same_coords=False):
+        """Обновляет спрайт дерева"""
         cur_image_name = Tree.images_names[self.growing_up_stage]
         self.image = self.set_image(cur_image_name, -1)
 
+        # Если у дерева нужно генерировать новые координаты (это новый росток)
         if not same_coords:
             self.draw_rect = self.image.get_rect()
             self.draw_rect.x = random.randrange(0, 700, 4)
             self.draw_rect.y = random.randrange(0, 500, 4)
+            self.rect = pygame.rect.Rect(
+                (self.draw_rect.x + 32, self.draw_rect.y + 116), (68, 16))
+            self.center = self.rect.center
+
+        # Если это новый росток, то подгоняем rect'ы под размер картинки
+        if self.growing_up_stage == 0:
+            self.draw_rect = self.image.get_rect()
+            self.draw_rect.center = self.center
+            self.rect = pygame.rect.Rect(
+                (self.draw_rect.x + 20, self.draw_rect.y + 30), (20, 10))
+
+        if self.growing_up_stage == 3:
+            self.draw_rect = self.image.get_rect()
+            self.draw_rect.center = self.center
             self.rect = pygame.rect.Rect(
                 (self.draw_rect.x + 32, self.draw_rect.y + 116), (68, 16))
 
