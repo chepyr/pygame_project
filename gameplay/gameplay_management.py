@@ -6,6 +6,8 @@ import field_class
 import main_character
 from PIL import Image, ImageDraw, ImageFont
 
+from things_dir.thing import NEED_WOOD
+
 
 class Game:
     def __init__(self):
@@ -15,6 +17,7 @@ class Game:
         self.taskbar = Taskbar(self.inventory, self.menu, self.resources)
         self.field = field_class.Field()
         self.hero = main_character.MainCharacter()
+        self.ship = pygame.sprite.GroupSingle(things_dir.thing.Ship())
 
     def update(self, *args):
         if args:
@@ -23,8 +26,10 @@ class Game:
         self.field.update(self.hero.rect)
         self.add_collected_things(self.field.collected)
         self.resources.update()
+        self.ship.update(self.resources.wood_resource.count)
 
     def draw(self, screen):
+        self.ship.draw(screen)
         self.taskbar.draw(screen)
         self.field.draw(screen)
 
@@ -67,7 +72,8 @@ class Taskbar(things_dir.thing.Thing):
         self.clickable_items = [self.inventory, self.menu]
         self.resources = resources
 
-        self.emblems = modified_group.ModifiedGroup((WoodEmblem(), SeedEmblem()))
+        self.emblems = modified_group.ModifiedGroup(
+            (WoodEmblem(), SeedEmblem()))
 
         self.group = modified_group.ModifiedGroup()
         self.group.add(self, self.inventory, self.menu)
@@ -159,6 +165,7 @@ class Resource(things_dir.thing.Thing):
         super().__init__()
         self.count = 0
         self.group = pygame.sprite.GroupSingle()
+        self.wood = False
 
     def update_image(self):
         text_color = (105, 76, 53)
@@ -166,9 +173,18 @@ class Resource(things_dir.thing.Thing):
         font = ImageFont.truetype("arial.ttf", 30)
         image = Image.new('RGB', (100, 100), (0, 0, 0))
         draw = ImageDraw.Draw(image)
-        draw.text((10, 10), text=f'{self.count}', fill=text_color,
-                  align="center", font=font, stroke_width=2,
-                  stroke_fill=stroke_color)
+
+        if self.wood:
+            draw.text((10, 10), text=f'{self.count} / {NEED_WOOD}',
+                      fill=text_color,
+                      align="center", font=font, stroke_width=2,
+                      stroke_fill=stroke_color)
+        else:
+            draw.text((10, 10), text=f'{self.count}',
+                      fill=text_color,
+                      align="center", font=font, stroke_width=2,
+                      stroke_fill=stroke_color)
+
         image_bytes = image.tobytes()
         self.image = pygame.image.fromstring(image_bytes, (100, 100), 'RGB')
         self.image = self.image.convert()
@@ -185,8 +201,9 @@ class WoodResource(Resource):
     def __init__(self):
         super().__init__()
         self.image = self.set_image(WoodResource.image_name, -1)
-        self.rect.x = 200
+        self.rect.x = 180
         self.rect.y = 810
+        self.wood = True
 
     def increase(self, count):
         self.count += count
@@ -213,7 +230,7 @@ class WoodEmblem(things_dir.thing.Thing):
         self.image = self.set_image(WoodEmblem.image_name, -1)
         self.image = pygame.transform.scale(self.image, (100, 50))
         self.rect = self.image.get_rect()
-        self.rect.x = 250
+        self.rect.x = 300
         self.rect.y = 810
 
 

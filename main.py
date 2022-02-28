@@ -29,7 +29,7 @@ def main():
 
     # Создание спрайтов
     grass_sprites = modified_group.ModifiedGroup()
-    for grass_i in range(20):
+    for grass_i in range(10):
         new_grass = things_dir.plant.Grass()
         grass_sprites.add(new_grass)
 

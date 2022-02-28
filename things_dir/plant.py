@@ -5,6 +5,7 @@ import pygame
 from things_dir.thing import Thing
 from main import FIELD_SIZE
 
+
 class Plant(Thing):
     image_name = 'default.png'
 
@@ -100,7 +101,7 @@ class Tree(Plant):
                         (self.draw_rect.x + seed_i * 10,
                          self.draw_rect.y + seed_i * 10),
                         (self.draw_rect.w, self.draw_rect.h))
-                    self.field.create_seed(self.draw_rect)
+                    self.field.create_seed(rect)
 
                 self.kill()
                 del self
