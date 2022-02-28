@@ -75,8 +75,33 @@ class Tree(Plant):
             # Если у дерева закончилась "жизнь", то удаляем его,
             # а на его месте на поле выпадаюи семечко и кусок древесины
             if self.left_to_chop <= 0:
-                self.field.create_wood(self.draw_rect)
-                self.field.create_seed(self.draw_rect)
+                # Вероятность выпадения второго элемента
+                second_wood_drop_probability = 40
+                second_seed_drop_probability = 30
+                # Колмчество элементов
+                count_wood = 1 + bool(
+                    random.randrange(100) < second_wood_drop_probability)
+                count_seed = 1 + bool(random.randrange(
+                    100) < second_seed_drop_probability)
+
+                for wood_i in range(count_wood):
+                    # При итерации у каждого следующего объекта
+                    # делаем смещение на 10 пикселей вправо и вниз
+                    rect = pygame.rect.Rect(
+                        (self.draw_rect.x + wood_i * 10,
+                         self.draw_rect.y + wood_i * 10),
+                        (self.draw_rect.w, self.draw_rect.h))
+                    self.field.create_wood(rect)
+
+                for seed_i in range(count_seed):
+                    # При итерации у каждого следующего объекта
+                    # делаем смещение на 10 пикселей вправо и вниз
+                    rect = pygame.rect.Rect(
+                        (self.draw_rect.x + seed_i * 10,
+                         self.draw_rect.y + seed_i * 10),
+                        (self.draw_rect.w, self.draw_rect.h))
+                    self.field.create_seed(self.draw_rect)
+
                 self.kill()
                 del self
                 return
