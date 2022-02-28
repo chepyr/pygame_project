@@ -19,7 +19,7 @@ class Field:
 
     def draw(self, screen):
         self.dropped_things.draw(screen)
-        self.trees_group.draw(screen)
+        # self.trees_group.draw(screen)
 
     def create_wood(self, tree_rect):
         # Метод вызывается из метода Plant.update, когда дерево срубилось

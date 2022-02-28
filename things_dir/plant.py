@@ -25,7 +25,7 @@ class Tree(Plant):
         super().__init__(*groups)
 
         self.age = age
-        self.growing_velocity = random.randrange(3, 5)
+        self.growing_velocity = random.randrange(1, 5)
         # Начальная стадия развития - семечко
         self.growing_up_stage = 0
         # Если это уже взрослое дерево, то присваиваем ему 2ую стадию
@@ -49,7 +49,8 @@ class Tree(Plant):
         return distance < accessible_radius
 
     def start_chopping(self):
-        self.is_being_chop = True
+        if self.growing_up_stage == 3:
+            self.is_being_chop = True
 
     def stop_chopping(self):
         self.is_being_chop = False
@@ -62,9 +63,9 @@ class Tree(Plant):
         if self.is_being_chop:
             self.left_to_chop -= time * self.chopping_velocity / 1000
             if self.left_to_chop <= 0:
-                self.kill()
                 self.field.create_wood(self.draw_rect)
                 self.field.create_seed(self.draw_rect)
+                self.kill()
 
         # Увеличиваем возраст растения, если оно ещё растёт
         if self.age < 100:
