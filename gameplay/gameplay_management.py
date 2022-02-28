@@ -67,6 +67,8 @@ class Taskbar(things_dir.thing.Thing):
         self.clickable_items = [self.inventory, self.menu]
         self.resources = resources
 
+        self.emblems = modified_group.ModifiedGroup((WoodEmblem(), SeedEmblem()))
+
         self.group = modified_group.ModifiedGroup()
         self.group.add(self, self.inventory, self.menu)
 
@@ -78,6 +80,7 @@ class Taskbar(things_dir.thing.Thing):
     def draw(self, screen):
         self.group.draw(screen)
         self.resources.draw(screen)
+        self.emblems.draw(screen)
 
     def resize(self, new_size):
         self.image = pygame.transform.scale(self.image, (
@@ -158,8 +161,8 @@ class Resource(things_dir.thing.Thing):
         self.group = pygame.sprite.GroupSingle()
 
     def update_image(self):
-        text_color = (140, 100, 116)
-        stroke_color = (80, 80, 80)
+        text_color = (105, 76, 53)
+        stroke_color = (58, 41, 46)
         font = ImageFont.truetype("arial.ttf", 30)
         image = Image.new('RGB', (100, 100), (0, 0, 0))
         draw = ImageDraw.Draw(image)
@@ -183,7 +186,7 @@ class WoodResource(Resource):
         super().__init__()
         self.image = self.set_image(WoodResource.image_name, -1)
         self.rect.x = 200
-        self.rect.y = 700
+        self.rect.y = 810
 
     def increase(self, count):
         self.count += count
@@ -195,8 +198,31 @@ class SeedResource(Resource):
     def __init__(self):
         super().__init__()
         self.image = self.set_image(SeedResource.image_name, -1)
-        self.rect.x = 400
-        self.rect.y = 700
+        self.rect.x = 500
+        self.rect.y = 810
 
     def increase(self, count):
         self.count += count
+
+
+class WoodEmblem(things_dir.thing.Thing):
+    image_name = 'wood.png'
+
+    def __init__(self):
+        super().__init__()
+        self.image = self.set_image(WoodEmblem.image_name, -1)
+        self.image = pygame.transform.scale(self.image, (100, 50))
+        self.rect = self.image.get_rect()
+        self.rect.x = 250
+        self.rect.y = 810
+
+
+class SeedEmblem(things_dir.thing.Thing):
+    image_name = 'seed.png'
+
+    def __init__(self):
+        super().__init__()
+        self.image = self.set_image(SeedEmblem.image_name, -1)
+        self.rect = self.image.get_rect()
+        self.rect.x = 550
+        self.rect.y = 810
