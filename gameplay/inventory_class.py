@@ -24,3 +24,12 @@ class Wood(DroppedDownThing):
         self.image = self.set_image(Wood.image_name, -1)
         self.image = pygame.transform.scale(self.image, (100, 50))
         self.name = 'wood'
+
+
+class Seed(DroppedDownThing):
+    image_name = 'seed.png'
+
+    def __init__(self):
+        super().__init__()
+        self.image = self.set_image(Seed.image_name, -1)
+        self.name = 'seed'
