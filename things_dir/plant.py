@@ -3,7 +3,7 @@ import random
 import pygame.mask
 import pygame
 from things_dir.thing import Thing
-
+from main import FIELD_SIZE
 
 class Plant(Thing):
     image_name = 'default.png'
@@ -26,7 +26,7 @@ class Tree(Plant):
         super().__init__(*groups)
 
         self.age = age
-        self.growing_velocity = random.randrange(1, 5)
+        self.growing_velocity = random.randrange(1, 8)
         # Начальная стадия развития - семечко
         self.growing_up_stage = 0
         # Если это уже взрослое дерево, то присваиваем ему 2ую стадию
@@ -133,8 +133,8 @@ class Tree(Plant):
         # Если у дерева нужно генерировать новые координаты (это новый росток)
         if not same_coords:
             self.draw_rect = self.image.get_rect()
-            self.draw_rect.x = random.randrange(0, 700, 4)
-            self.draw_rect.y = random.randrange(0, 500, 4)
+            self.draw_rect.x = random.randrange(0, FIELD_SIZE[0], 4)
+            self.draw_rect.y = random.randrange(0, FIELD_SIZE[1] - 100, 4)
             self.rect = pygame.rect.Rect(
                 (self.draw_rect.x + 32, self.draw_rect.y + 116), (68, 16))
             self.center = self.rect.center
@@ -160,5 +160,5 @@ class Grass(Plant):
         super().__init__(*groups)
         self.image = self.set_image(Grass.image_name, -1)
         self.draw_rect = self.image.get_rect()
-        self.draw_rect.x = random.randrange(900)
-        self.draw_rect.y = random.randrange(700)
+        self.draw_rect.x = random.randrange(FIELD_SIZE[0])
+        self.draw_rect.y = random.randrange(FIELD_SIZE[1])

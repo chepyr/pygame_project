@@ -1,5 +1,16 @@
 from gameplay import inventory_class
 import modified_group
+from things_dir.thing import Thing
+import pygame
+
+
+class Background(Thing):
+    image_name = "background.png"
+
+    def __init__(self, *groups):
+        super().__init__(*groups)
+        self.image = self.set_image(Background.image_name)
+        self.rect = self.image.get_rect()
 
 
 class Field:
@@ -9,6 +20,7 @@ class Field:
         self.dropped_things = modified_group.ModifiedGroup()
         self.shades = []
         self.collected = []
+        self.background = pygame.sprite.GroupSingle(Background())
 
     def update(self, hero_coordinates):
         self.collected = []

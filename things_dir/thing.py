@@ -48,4 +48,3 @@ class Ship(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = 700
         self.rect.y = 100
-

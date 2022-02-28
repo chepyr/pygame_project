@@ -6,13 +6,15 @@ import field_class
 from gameplay import gameplay_management, inventory_class
 
 GRASS_COLOR = (131, 146, 76)
-SCREEN_SIZE = (1000, 800)
+SCREEN_SIZE = (1100, 900)
+FIELD_SIZE = (640, 600)
 
 
 def main():
     pygame.init()
     pygame.display.set_caption('Game')
-    screen = pygame.display.set_mode(SCREEN_SIZE, pygame.RESIZABLE)
+    # screen = pygame.display.set_mode(SCREEN_SIZE, pygame.RESIZABLE)
+    screen = pygame.display.set_mode(SCREEN_SIZE)
     pygame.mouse.set_visible(False)
     screen.fill(GRASS_COLOR)
 
@@ -119,6 +121,8 @@ def main():
                         tree.stop_chopping()
 
         cur_time = clock.tick()
+
+        game.field.background.draw(screen)
 
         grass_sprites.draw(screen)
 
