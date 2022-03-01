@@ -191,7 +191,7 @@ class Resource(things_dir.thing.Thing):
         text_color = (105, 76, 53)
         stroke_color = (58, 41, 46)
         font = ImageFont.truetype("arial.ttf", 30)
-        image = Image.new('RGB', (100, 100), (0, 0, 0))
+        image = Image.new('RGB', (120, 100), (0, 0, 0))
         draw = ImageDraw.Draw(image)
 
         if self.wood:
@@ -206,7 +206,7 @@ class Resource(things_dir.thing.Thing):
                       stroke_fill=stroke_color)
 
         image_bytes = image.tobytes()
-        self.image = pygame.image.fromstring(image_bytes, (100, 100), 'RGB')
+        self.image = pygame.image.fromstring(image_bytes, (120, 100), 'RGB')
         self.image = self.image.convert()
         colorkey = self.image.get_at((0, 0))
         self.image.set_colorkey(colorkey)
