@@ -22,7 +22,7 @@ def main():
     things_dir.thing.Cursor(cursor_group)
 
     # настройки игры
-    game = gameplay_management.Game()
+    game = gameplay_management.Game(SCREEN_SIZE)
     game.resize(screen.get_size())
     axe = things_dir.thing.Axe()
     game.inventory.add_item(axe)

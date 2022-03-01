@@ -8,9 +8,10 @@ from PIL import Image, ImageDraw, ImageFont
 
 from things_dir.thing import NEED_WOOD
 
-
 class Game:
-    def __init__(self):
+    def __init__(self, screen_size):
+        self.screen_size = screen_size
+
         self.inventory = Inventory()
         self.menu = Menu()
         self.resources = AllResources()
@@ -18,6 +19,8 @@ class Game:
         self.field = field_class.Field()
         self.hero = main_character.MainCharacter()
         self.ship = pygame.sprite.GroupSingle(things_dir.thing.Ship())
+
+        self.game_over = None
 
     def update(self, *args):
         if args:
@@ -28,10 +31,17 @@ class Game:
         self.resources.update()
         self.ship.update(self.resources.wood_resource.count)
 
+        if self.ship.sprite.construction_finished:
+            self.game_over = pygame.sprite.GroupSingle((GameOver(self.screen_size)))
+
+
     def draw(self, screen):
         self.ship.draw(screen)
         self.taskbar.draw(screen)
         self.field.draw(screen)
+
+        if self.game_over is not None:
+            self.game_over.draw(screen)
 
     def add_collected_things(self, collected_things):
         """Если игрок собрал какую-то вещь с поля,
@@ -56,6 +66,16 @@ class Game:
 
             # Уменьшаем количество семян у игрока
             self.resources.seed_resource.increase(-1)
+
+
+class GameOver(things_dir.thing.Thing):
+    image_name = 'game_over.png'
+
+    def __init__(self, screen_size):
+        super().__init__()
+        self.image = self.set_image(GameOver.image_name, -1)
+        self.rect = self.image.get_rect()
+        self.rect.center = (screen_size[0] / 2, screen_size[1] / 2)
 
 
 class Taskbar(things_dir.thing.Thing):

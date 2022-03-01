@@ -2,7 +2,7 @@ import pygame
 from load_image_function import load_image
 
 # Количество древесины, необходимое для разблокировки корабля
-NEED_WOOD = 20
+NEED_WOOD = 5
 
 
 class Thing(pygame.sprite.Sprite):
@@ -53,19 +53,17 @@ class Ship(pygame.sprite.Sprite):
         self.rect.y = 50
 
         self.start_image_count = NEED_WOOD / 2
-        self.middle_image_count = self.start_image_count + 1 + NEED_WOOD / 2
 
         self.construction_finished = False
 
     def update(self, wood_count):
         """Обновляет спрайты корабля по мере сбора древесины"""
-        # переход во второй этап строительства
-        if wood_count > self.start_image_count:
-            self.image = load_image(Ship.images[1], -1)
         # Переход в последний этап строительства
-        elif wood_count > self.middle_image_count:
-            self.image = load_image(Ship[2], -1)
+
+        if self.start_image_count <= wood_count <= NEED_WOOD:
+            self.image = load_image(Ship.images[1], -1)
 
         # Строительство закончено
         elif wood_count >= NEED_WOOD:
+            self.image = load_image(Ship.images[2], -1)
             self.construction_finished = True
