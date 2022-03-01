@@ -8,14 +8,14 @@ from PIL import Image, ImageDraw, ImageFont
 
 from things_dir.thing import NEED_WOOD
 
+
 class Game:
     def __init__(self, screen_size):
         self.screen_size = screen_size
 
         self.inventory = Inventory()
-        self.menu = Menu()
         self.resources = AllResources()
-        self.taskbar = Taskbar(self.inventory, self.menu, self.resources)
+        self.taskbar = Taskbar(self.inventory, self.resources)
         self.field = field_class.Field()
         self.hero = main_character.MainCharacter()
         self.ship = pygame.sprite.GroupSingle(things_dir.thing.Ship())
@@ -32,8 +32,8 @@ class Game:
         self.ship.update(self.resources.wood_resource.count)
 
         if self.ship.sprite.construction_finished:
-            self.game_over = pygame.sprite.GroupSingle((GameOver(self.screen_size)))
-
+            self.game_over = pygame.sprite.GroupSingle(
+                (GameOver(self.screen_size)))
 
     def draw(self, screen):
         self.ship.draw(screen)
@@ -81,22 +81,21 @@ class GameOver(things_dir.thing.Thing):
 class Taskbar(things_dir.thing.Thing):
     image_name = 'taskbar.png'
 
-    def __init__(self, inventory, menu, resources):
+    def __init__(self, inventory, resources):
         super().__init__()
         self.image = self.set_image(Taskbar.image_name)
         self.rect = self.image.get_rect()
         self.height = self.rect.height
 
         self.inventory = inventory
-        self.menu = menu
-        self.clickable_items = [self.inventory, self.menu]
+        self.clickable_items = [self.inventory]
         self.resources = resources
 
         self.emblems = modified_group.ModifiedGroup(
             (WoodEmblem(), SeedEmblem()))
 
         self.group = modified_group.ModifiedGroup()
-        self.group.add(self, self.inventory, self.menu)
+        self.group.add(self, self.inventory)
 
     def update(self, *args):
         for item in self.clickable_items:
@@ -114,28 +113,6 @@ class Taskbar(things_dir.thing.Thing):
         self.rect.y = new_size[1] - self.height
 
         self.inventory.update_coordinates(self.rect)
-        self.menu.update_coordinates(self.rect, new_size)
-
-
-class Menu(things_dir.thing.Thing):
-    image_button = 'menu.png'
-
-    def __init__(self):
-        super().__init__()
-        self.inventory_content = list()
-        self.image = self.set_image(Menu.image_button, -1)
-        self.rect = self.image.get_rect()
-
-    def pressed_on(self, *args):
-        return args and args[0].type == pygame.MOUSEBUTTONDOWN and \
-               self.rect.collidepoint(args[0].pos)
-
-    def enable_active_mode(self):
-        print('Вы в меню')
-
-    def update_coordinates(self, taskbar_rect, new_screen_size):
-        self.rect.x = new_screen_size[0] - 100 - self.rect.width
-        self.rect.y = taskbar_rect.y + 32
 
 
 class Inventory(things_dir.thing.Thing):
@@ -148,10 +125,7 @@ class Inventory(things_dir.thing.Thing):
         self.rect = self.image.get_rect()
 
     def enable_active_mode(self):
-        print('Содержимое инвентаря: ', end='')
-        for item in self.inventory_content:
-            print(item.name, end=' ')
-        print()
+        pass
 
     def add_item(self, new_item):
         self.inventory_content.append(new_item)

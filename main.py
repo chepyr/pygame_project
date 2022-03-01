@@ -13,7 +13,6 @@ FIELD_SIZE = (640, 600)
 def main():
     pygame.init()
     pygame.display.set_caption('Game')
-    # screen = pygame.display.set_mode(SCREEN_SIZE, pygame.RESIZABLE)
     screen = pygame.display.set_mode(SCREEN_SIZE)
     pygame.mouse.set_visible(False)
     screen.fill(GRASS_COLOR)

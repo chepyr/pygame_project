@@ -4,6 +4,8 @@ import pygame
 from things_dir.thing import Thing
 from load_image_function import load_image
 
+BORDERS = [870, 740]
+
 
 class MainCharacter(Thing):
     def __init__(self, *group):
@@ -77,11 +79,15 @@ class MainCharacter(Thing):
                     if pygame.sprite.collide_rect(self, group):
                         there_is_any_intersections = True
                         break
+                    if self.draw_rect.x < 0 or self.draw_rect.x > BORDERS[0]:
+                        there_is_any_intersections = True
+                        break
+                    if self.draw_rect.y < 0 or self.draw_rect.y > BORDERS[1]:
+                        there_is_any_intersections = True
+                        break
             if there_is_any_intersections:
                 self.move(displacement, reverse=True)
 
-        # if self.independent_moving:
-        #     self.independent_move(time)
         else:
             self.current_image_left_time -= time
             if self.current_image_left_time < 0:
